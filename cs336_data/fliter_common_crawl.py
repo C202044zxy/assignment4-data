@@ -45,7 +45,6 @@ def identify_language(text: str) -> tuple[str, float]:
     model = _get_lang_model()
     cleaned = text.replace("\n", " ")
     labels, probs = model.predict(cleaned)
-    print(labels, probs)
     lang = labels[0].replace("__label__", "")
     score = float(probs[0])
     return lang, score
