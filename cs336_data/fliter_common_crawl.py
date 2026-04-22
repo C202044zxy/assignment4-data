@@ -4,6 +4,7 @@ from fastwarc.warc import ArchiveIterator, WarcRecordType
 from pathlib import Path
 from typing import Any
 import fasttext
+import regex as re
 
 
 proj_root = Path(__file__).parent.parent
@@ -48,6 +49,27 @@ def identify_language(text: str) -> tuple[str, float]:
     lang = labels[0].replace("__label__", "")
     score = float(probs[0])
     return lang, score
+
+
+def mask_emails(text: str) -> tuple[str, int]:
+    mask = '|||EMAIL_ADDRESS|||'
+    pattern = r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'
+    new_text, num = re.subn(pattern, mask, text)
+    return (new_text, num)
+
+
+def mask_phone_numbers(text: str) -> tuple[str, int]:
+    mask = '|||PHONE_NUMBER|||'
+    pattern = r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}'
+    new_text, num = re.subn(pattern, mask, text)
+    return (new_text, num)
+
+
+def mask_ips(text: str) -> tuple[str, int]:
+    mask = '|||IP_ADDRESS|||'
+    pattern = r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
+    new_text, num = re.subn(pattern, mask, text)
+    return (new_text, num)
 
 
 if __name__ == "__main__":
