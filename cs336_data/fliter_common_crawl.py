@@ -9,7 +9,10 @@ import regex as re
 
 proj_root = Path(__file__).parent.parent
 warc_path = proj_root / "data/CC/example.warc.gz"
-model_path = proj_root / "data/classifier/lid.176.bin"
+model_path = proj_root / "data/classifier"
+lang_model_path = model_path / "lid.176.bin"
+nsfw_model_path = model_path / "jigsaw_fasttext_bigrams_nsfw_final.bin"
+hatespeech_model_path = model_path / "jigsaw_fasttext_bigrams_hatespeech_final.bin"
 
 
 def extract_text_from_html_bytes(html_bytes: bytes) -> str:
@@ -33,17 +36,35 @@ def parse_example_warc(file_path: str):
 
 
 _lang_model = None
+_nsfw_model = None
+_hatespeech_model = None
 
 
-def _get_lang_model():
-    global _lang_model
-    if _lang_model is None:
-        _lang_model = fasttext.load_model(str(model_path))
-    return _lang_model
+def _get_model(name: str):
+    match name:
+        case "lang":
+            global _lang_model
+            if _lang_model is None:
+                _lang_model = fasttext.load_model(str(lang_model_path))
+            return _lang_model
+
+        case "nsfw":
+            global _nsfw_model
+            if _nsfw_model is None:
+                _nsfw_model = fasttext.load_model(str(nsfw_model_path))
+            return _nsfw_model
+
+        case "hatespeech":
+            global _hatespeech_model
+            if _hatespeech_model is None:
+                _hatespeech_model = fasttext.load_model(str(hatespeech_model_path))
+            return _hatespeech_model
+
+    return None
 
 
-def identify_language(text: str) -> tuple[str, float]:
-    model = _get_lang_model()
+def identify(text: str, type: str) -> tuple[str, float]:
+    model = _get_model(type)
     cleaned = text.replace("\n", " ")
     labels, probs = model.predict(cleaned)
     lang = labels[0].replace("__label__", "")
@@ -70,7 +91,3 @@ def mask_ips(text: str) -> tuple[str, int]:
     pattern = r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
     new_text, num = re.subn(pattern, mask, text)
     return (new_text, num)
-
-
-if __name__ == "__main__":
-    parse_example_warc(warc_path)

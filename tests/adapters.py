@@ -4,7 +4,7 @@ import os
 from typing import Any
 from cs336_data import (
     extract_text_from_html_bytes,
-    identify_language,
+    identify,
     mask_emails,
     mask_phone_numbers,
     mask_ips,
@@ -17,7 +17,7 @@ def run_extract_text_from_html_bytes(html_bytes: bytes) -> str | None:
 
 
 def run_identify_language(text: str) -> tuple[Any, float]:
-    return identify_language(text)
+    return identify(text, "lang")
 
 
 def run_mask_emails(text: str) -> tuple[str, int]:
@@ -33,11 +33,11 @@ def run_mask_ips(text: str) -> tuple[str, int]:
 
 
 def run_classify_nsfw(text: str) -> tuple[Any, float]:
-    raise NotImplementedError
+    return identify(text, "nsfw")
 
 
 def run_classify_toxic_speech(text: str) -> tuple[Any, float]:
-    raise NotImplementedError
+    return identify(text, "hatespeech")
 
 
 def run_classify_quality(text: str) -> tuple[Any, float]:
