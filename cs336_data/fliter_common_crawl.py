@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 import fasttext
 import regex as re
+from nltk.tokenize import word_tokenize
 
 
 proj_root = Path(__file__).parent.parent
@@ -91,3 +92,28 @@ def mask_ips(text: str) -> tuple[str, int]:
     pattern = r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
     new_text, num = re.subn(pattern, mask, text)
     return (new_text, num)
+
+
+def gopher_quality_filter(text: str) -> bool:
+    tokens = word_tokenize(text)
+    n = len(tokens)
+    if n < 50 or n > 100000:
+        return False
+
+    mean_len = sum(len(token) for token in tokens) / n
+    if mean_len < 3 or mean_len > 10:
+        return False
+    
+    lines = text.splitlines()
+    ellipsis_lines = sum(
+        1 for line in lines
+        if line.rstrip().endswith("...")
+    )
+    if ellipsis_lines / len(lines) > 0.3:
+        return False
+
+    alpha_words = sum(1 for token in tokens if any(c.isalpha() for c in token))
+    if alpha_words / n < 0.8:
+        return False
+    
+    return True

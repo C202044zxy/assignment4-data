@@ -5,6 +5,7 @@ from .fliter_common_crawl import (
     mask_emails,
     mask_phone_numbers,
     mask_ips,
+    gopher_quality_filter,
 )
 
 __version__ = importlib.metadata.version("cs336-data")
@@ -15,4 +16,5 @@ __all__ = [
     "mask_emails",
     "mask_phone_numbers",
     "mask_ips",
+    "gopher_quality_filter",
 ]

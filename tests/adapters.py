@@ -8,6 +8,7 @@ from cs336_data import (
     mask_emails,
     mask_phone_numbers,
     mask_ips,
+    gopher_quality_filter,
 )
 
 
@@ -45,7 +46,7 @@ def run_classify_quality(text: str) -> tuple[Any, float]:
 
 
 def run_gopher_quality_filter(text: str) -> bool:
-    raise NotImplementedError
+    return gopher_quality_filter(text)
 
 
 def run_exact_line_deduplication(
