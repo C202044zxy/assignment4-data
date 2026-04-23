@@ -7,6 +7,9 @@ from .fliter_common_crawl import (
     mask_ips,
     gopher_quality_filter,
 )
+from .deduplicate import(
+    exact_line_deduplication,
+)
 
 __version__ = importlib.metadata.version("cs336-data")
 
@@ -17,4 +20,5 @@ __all__ = [
     "mask_phone_numbers",
     "mask_ips",
     "gopher_quality_filter",
+    "exact_line_deduplication",
 ]
