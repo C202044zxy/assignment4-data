@@ -10,6 +10,9 @@ from .fliter_common_crawl import (
 from .deduplicate import(
     exact_line_deduplication,
 )
+from .minhash import(
+    minhash_deduplication,
+)
 
 __version__ = importlib.metadata.version("cs336-data")
 
@@ -21,4 +24,5 @@ __all__ = [
     "mask_ips",
     "gopher_quality_filter",
     "exact_line_deduplication",
+    "minhash_deduplication",
 ]

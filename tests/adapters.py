@@ -10,6 +10,7 @@ from cs336_data import (
     mask_ips,
     gopher_quality_filter,
     exact_line_deduplication,
+    minhash_deduplication,
 )
 
 
@@ -64,4 +65,11 @@ def run_minhash_deduplication(
     jaccard_threshold: float,
     output_directory: os.PathLike,
 ):
-    raise NotImplementedError
+    minhash_deduplication(
+        input_files,
+        num_hashes,
+        num_bands,
+        ngrams,
+        jaccard_threshold,
+        output_directory,
+    )
